@@ -8,11 +8,18 @@ const https = require("https");
 const express = require('express')
 const compiler = require("./lib/compile.js");
 const app = module.exports = express();
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 app.set('port', (process.env.PORT || "5" + langID));
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: false, limit: 100000000 }));
+app.use(bodyParser.text({limit: '50mb'}));
+app.use(bodyParser.raw({limit: '50mb'}));
+app.use(bodyParser.json({limit: '50mb' }));
 app.use(express.static(__dirname + '/pub'));
 app.use(function (err, req, res, next) {
-  console.error(err.stack)
+  console.error(err.stack);
   res.sendStatus(500);
 });
 app.get('/', function(req, res) {
@@ -21,45 +28,36 @@ app.get('/', function(req, res) {
 app.get("/version", function(req, res) {
   res.send(compiler.version || "v0.0.0");
 });
-app.get("/compile", function(req, res) {
-  let body = "";
-  req.on("data", function (chunk) {
-    body += chunk;
+app.get("/compile", handleValidateCompile, handleCompile);
+
+function handleValidateCompile(req, res, next) {
+  const body = JSON.parse(req.body);
+  let auth = body.auth;
+  validate(auth, function (err, data) {
+    if (err) {
+      res.status(401).send(err);
+      return;
+    }
+    if (data.access.indexOf('compile') === -1) {
+      res.sendStatus(401).send('not authorized to compile');
+      return;
+    }
+    next();
   });
-  req.on('end', function () {
-    body = JSON.parse(body);
-    let auth = body.auth;
-    validate(auth, (err, data) => {
-      if (err) {
-        res.send(err);
-      } else {
-        if (data.access.indexOf("compile") === -1) {
-          // Don't have compile access.
-          res.sendStatus(401).send(err);
-        } else {
-          let code = body.src;
-          let data = body.data;
-          data.REFRESH = body.refresh; // Stowaway flag.
-          let t0 = new Date;
-          compiler.compile(code, data, function (err, val) {
-            if (err && err.length) {
-              res.send({
-                error: err,
-              });
-            } else {
-              console.log("GET /compile " + (new Date - t0) + "ms");
-              res.json(val);
-            }
-          });
-        }
-      }
-    });
+}
+function handleCompile(req, res) {
+  const body = JSON.parse(req.body);
+  let code = body.src;
+  let data = body.data;
+  data.REFRESH = body.refresh; // Stowaway flag.
+  compiler.compile(code, data, function (err, val) {
+    if (err && err.length) {
+      res.status(500).json({error: err});
+      return;
+    }
+    res.status(200).json(val);
   });
-  req.on('error', function(e) {
-    console.log(e);
-    res.send(e);
-  });
-});
+}
 function postAuth(path, data, resume) {
   let encodedData = JSON.stringify(data);
   var options = {
