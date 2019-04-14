@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const request = require('request');
 const url = require('url');
+const routes = require('./src/routes');
 
 const agent = new https.Agent({keepAlive: true});
 
@@ -29,10 +30,8 @@ app.use(function (err, req, res, next) {
 app.get('/', function(req, res) {
   res.send("Hello, L" + langID + "!");
 });
-app.get("/version", function(req, res) {
-  res.send(compiler.version || "v0.0.0");
-});
-app.get("/compile", handleValidateCompile, handleCompile);
+app.get('/version', routes.version(compiler));
+app.get('/compile', handleValidateCompile, routes.compile(compiler));
 
 function handleValidateCompile(req, res, next) {
   const body = JSON.parse(req.body);
@@ -47,19 +46,6 @@ function handleValidateCompile(req, res, next) {
       return;
     }
     next();
-  });
-}
-function handleCompile(req, res) {
-  const body = JSON.parse(req.body);
-  let code = body.src;
-  let data = body.data;
-  data.REFRESH = body.refresh; // Stowaway flag.
-  compiler.compile(code, data, function (err, val) {
-    if (err && err.length) {
-      res.status(500).json({error: err});
-      return;
-    }
-    res.status(200).json(val);
   });
 }
 function postAuth(path, data, resume) {

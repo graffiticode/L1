@@ -1,13 +1,15 @@
 const LOCAL_GATEWAY = 'http://localhost:3000/';
 const REMOTE_GATEWAY = 'https://www.graffiticode.com/';
 
+const {expect} = require('chai');
+const jsonDiff = require('json-diff');
 const path = require('path');
-const url = require('url');
 const request = require('request');
+const url = require('url');
 
 const testData = require(path.resolve(__dirname, './../tools/test.json'));
 
-describe('Compare compile', function() {
+describe.skip('Compare compile', function() {
   this.timeout(5000);
 
   function checkGateway(host, resume) {
@@ -43,8 +45,10 @@ describe('Compare compile', function() {
       if (err) {
         return resume(err);
       }
-      console.log(body);
-      resume(null, res);
+      if (res.statusCode !== 200) {
+        resume(new Error(`compile returned ${res.statusCode}`));
+      }
+      resume(null, body);
     });
   }
 
@@ -64,11 +68,12 @@ describe('Compare compile', function() {
 
   testData.forEach((data) => {
     // TODO(kevindy) These tests should be more hermetic (compile same data?)
-    it.skip(`should compile data: ${data}`, function(done) {
+    it(`should compile data: ${data}`, function(done) {
       getLocalAndRemoteCompile(data, function(err, local, remote) {
         if (err) {
           return done(err);
         }
+        expect(jsonDiff.diffString(remote, local)).to.have.length(0);
         done();
       });
     });
