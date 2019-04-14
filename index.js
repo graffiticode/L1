@@ -4,12 +4,16 @@
 */
 const langID = "0";
 // SHARED START
-const https = require("https");
-const express = require('express')
+const https = require('https');
+const express = require('express');
 const compiler = require("./lib/compile.js");
 const app = module.exports = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const request = require('request');
+const url = require('url');
+
+const agent = new https.Agent({keepAlive: true});
 
 app.set('port', (process.env.PORT || "5" + langID));
 app.use(morgan('dev'));
@@ -59,37 +63,22 @@ function handleCompile(req, res) {
   });
 }
 function postAuth(path, data, resume) {
-  let encodedData = JSON.stringify(data);
-  var options = {
-    host: "auth.artcompiler.com",
-    port: "443",
-    path: path,
-    method: "POST",
-    headers: {
-      'Content-Type': 'text/plain',
-      'Content-Length': Buffer.byteLength(encodedData),
-    },
-  };
-  var req = https.request(options);
-  req.on("response", (res) => {
-    var data = "";
-    res.on('data', function (chunk) {
-      data += chunk;
-    }).on('end', function () {
-      try {
-        resume(null, JSON.parse(data));
-      } catch (e) {
-        console.log("ERROR " + data);
-        console.log(e.stack);
-      }
-    }).on("error", function () {
-      console.log("error() status=" + res.statusCode + " data=" + data);
-    });
-  });
-  req.end(encodedData);
-  req.on('error', function(err) {
-    console.log("ERROR " + err);
-    resume(err);
+  const uri = new url.URL('https://auth.artcompiler.com');
+  uri.pathname = path;
+  request.post({
+    uri: uri,
+    body: data,
+    json: true,
+    agent: agent,
+  }, function (err, res, body) {
+    if (err) {
+      console.log("ERROR " + err);
+      return resume(err);
+    }
+    if (res.statusCode !== 200) {
+      return resume(new Error(`auth returned non 200 status code ${res.statusCode}`));
+    }
+    resume(null, body);
   });
 }
 function count(token, count) {
