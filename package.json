@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node index.js",
     "build-dev": "./node_modules/babel-cli/bin/babel-node.js tools/build",
-    "test": "mocha --reporter spec --recursive",
+    "smoke": "mocha --reporter spec --recursive --delay --smoke",
+    "test": "mocha --reporter spec --recursive --delay",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "dependencies": {
