@@ -7,8 +7,11 @@ default: build run
 build:
 	npm run build-dev
 
-run:
+run: build
 	npm start
 
-test:
+smoke: build
+	npm run smoke
+
+test: build
 	npm run test
