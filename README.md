@@ -22,3 +22,11 @@
   * `$ make`
   * Edit the code in the code view.
 * Repeat to taste.
+
+### Development mode
+
+This command will restart the dev server when changes to `src/`, `index.js`, or `package.json` are detected.
+
+```bash
+$ npm run watch
+```

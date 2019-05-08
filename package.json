@@ -8,7 +8,8 @@
     "start": "node index.js",
     "build-dev": "./node_modules/babel-cli/bin/babel-node.js tools/build",
     "test": "node index.js test",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "watch": "npx nodemon -w src -w index.js -w package.json --exec make"
   },
   "dependencies": {
     "domready": "^1.0.8",
@@ -39,6 +40,7 @@
     "browserify": "^12.0.1",
     "d3": "4.7.1",
     "flow-bin": "^0.32.0",
+    "nodemon": "^1.19.0",
     "react": "0.14.5",
     "react-dom": "0.14.5",
     "uglify-js": "^2.7.3"
