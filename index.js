@@ -27,9 +27,7 @@ app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.sendStatus(500);
 });
-app.get('/', function(req, res) {
-  res.send("Hello, L" + langID + "!");
-});
+app.get('/', routes.lang(compiler));
 app.get('/version', routes.version(compiler));
 app.get('/compile', handleValidateCompile, routes.compile(compiler));
 
