@@ -16,7 +16,8 @@
     "pretest": "npm run build",
     "test": "mocha --reporter spec --recursive --delay",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "watch": "npx nodemon -w src -w index.js -w package.json --exec make"
+    "watch": "npx nodemon -w src -w index.js -w package.json --exec make",
+    "deploy:gcloud": "gcloud functions deploy L0 --trigger-http --runtime=nodejs10 --entry-point=compiler"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

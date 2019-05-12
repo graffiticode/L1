@@ -26,6 +26,7 @@ exports.createApp = function createApp(auth, compiler) {
   app.get('/', routes.lang(compiler));
   app.get('/version', routes.version(compiler));
   app.get('/compile', routes.auth(auth, 'compile'), routes.compile(compiler));
+  app.post('/compile', routes.auth(auth, 'compile'), routes.compile(compiler));
 
   return app;
 }

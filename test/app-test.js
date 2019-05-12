@@ -38,4 +38,17 @@ describe('app', () => {
       .send(encodedBody)
       .expect(200, '4', done);
   });
+
+  it('POST /compile', (done) => {
+    const body = {
+      src: {},
+      data: {},
+    };
+    const encodedBody = JSON.stringify(body);
+    request(app)
+      .post('/compile')
+      .set('Content-type', 'text/plain')
+      .send(encodedBody)
+      .expect(200, '4', done);
+  });
 });
