@@ -5,9 +5,11 @@ const request = require('request');
 const url = require('url');
 const LOCAL_GATEWAY = 'http://localhost:3000/';
 const REMOTE_GATEWAY = 'https://www.graffiticode.com/';
+const LANG_ID = 0;
+const TIMEOUT_DURATION = 5000;
 getTests(function (err, testData) {
   describe('Compare compile', function() {
-    this.timeout(5000);
+    this.timeout(TIMEOUT_DURATION);
     function checkGateway(host, resume) {
       request.head(host, function (err, res) {
         if (err) {
@@ -39,7 +41,12 @@ getTests(function (err, testData) {
           return resume(err);
         }
         if (res.statusCode !== 200) {
-          resume(new Error(`compile returned ${res.statusCode}`));
+          resume(new Error(`compile ${host} returned ${res.statusCode}`));
+        }
+        try {
+          body = JSON.parse(body);
+        } catch (e) {
+          console.log("ERROR not JSON: " + body);
         }
         resume(null, body);
       });
@@ -57,15 +64,27 @@ getTests(function (err, testData) {
         });
       });
     }
-    describe('running ' + testData.length + ' tests', function () {
-      testData.forEach(function (data) {
-        it(`should compile data: ${data}`, function (done) {
+    describe('running ' + (testData && testData.length || 0) + ' tests', function () {
+      testData && testData.forEach(function (data) {
+        it(data, function (done) {
           getLocalAndRemoteCompile(data, function (err, local, remote) {
             if (err) {
               done(err);
             } else {
-              expect(jsonDiff.diffString(remote, local)).to.be.equal('');
-              done();
+              let expected, result;
+              try {
+                if (jsonDiff.diffString(remote, local)) {
+                  console.log(jsonDiff.diffString(remote, local));
+                }
+                result = jsonDiff.diffString(remote, local);
+                expected = "";
+                expect(result).to.be.equal(expected);
+                done();
+              } catch (e) {
+                console.log("ERROR " + e);
+                expect(false).to.be.true();
+                done();
+              }
             }
           });
         });
@@ -75,9 +94,10 @@ getTests(function (err, testData) {
   run();
 });
 function getTests(resume) {
+  console.log("Getting tests...");
   const hostUrl = new url.URL(LOCAL_GATEWAY);
   hostUrl.searchParams.set('table', 'items');
-  hostUrl.searchParams.set('where', 'langid=' + 0 + ' and mark is not null');
+  hostUrl.searchParams.set('where', 'langid=' + LANG_ID + ' and mark=1');
   hostUrl.searchParams.set('fields', ['itemid']);
   hostUrl.pathname = '/items';
   request(hostUrl.toString(), function(err, res, body) {
@@ -88,8 +108,15 @@ function getTests(resume) {
       resume(new Error(`compile returned ${res.statusCode}`));
     }
     let data = [];
-    let count = process.argv.indexOf('--smoke') > 0 && 10 || body.length;
-    shuffle(JSON.parse(body)).slice(0, count).forEach(d => {
+    let smoke = process.argv.indexOf('--smoke') > 0;
+    let tests = JSON.parse(body);
+    if (smoke) {
+      tests = shuffle(tests).slice(0, 100);
+    } else {
+      // Uncommment and use slice to narrow the test cases run with 'make test'.
+      // tests = tests.slice(200, 250);
+    }
+    tests.forEach(d => {
       data.push(d.itemid);
     });
     resume(null, data);
