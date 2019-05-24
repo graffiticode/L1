@@ -1,5 +1,5 @@
-module.exports = function(auth, scope) {
-  return function handleAuth(req, res, next) {
+module.exports = (auth, scope) => {
+  return (req, res, next) => {
     let body = null;
     try {
       body = JSON.parse(req.body);

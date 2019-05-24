@@ -1,5 +1,4 @@
 /* Copyright (c) 2016, Art Compiler LLC */
-/* @flow */
 import {
   assert,
   message,
@@ -420,7 +419,7 @@ let render = (function() {
 export let compiler = (function () {
   exports.langID = '0';
   exports.version = "v1.0.0";
-  exports.compile = function compile(code, data, resume) {
+  exports.compile = function compile(code, data, config, resume) {
     // Compiler takes an AST in the form of a node pool and transforms it into
     // an object to be rendered on the client by the viewer for this language.
     try {
