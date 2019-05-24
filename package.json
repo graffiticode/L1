@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "build": "babel-node tools/build",
+    "build": "babel-node util/build",
     "smoke": "mocha --reporter spec --recursive --delay --smoke",
     "pretest": "npm run build",
     "test": "mocha --reporter spec --recursive --delay",
