@@ -8,7 +8,7 @@ const REMOTE_GATEWAY = 'https://www.graffiticode.com/';
 const LANG_ID = 0;
 const TIMEOUT_DURATION = 5000;
 getTests(function (err, testData) {
-  describe('Compare compile', function() {
+  describe('compiles', function() {
     this.timeout(TIMEOUT_DURATION);
     function checkGateway(host, resume) {
       request.head(host, function (err, res) {
@@ -64,9 +64,9 @@ getTests(function (err, testData) {
         });
       });
     }
-    describe('running ' + (testData && testData.length || 0) + ' tests', function () {
-      testData && testData.forEach(function (data) {
-        it(data, function (done) {
+    describe('compiling ' + (testData && testData.length || 0) + ' tests', function () {
+      testData && testData.forEach(function (data, i) {
+        it((i + 1) + ": " + data, function (done) {
           getLocalAndRemoteCompile(data, function (err, local, remote) {
             if (err) {
               done(err);
@@ -95,9 +95,10 @@ getTests(function (err, testData) {
 });
 function getTests(resume) {
   console.log("Getting tests...");
+  let mark = process.argv.indexOf('--bugs') > 0 && -1 || 1;
   const hostUrl = new url.URL(LOCAL_GATEWAY);
   hostUrl.searchParams.set('table', 'items');
-  hostUrl.searchParams.set('where', 'langid=' + LANG_ID + ' and mark=1');
+  hostUrl.searchParams.set('where', 'langid=' + LANG_ID + ' and mark=' + mark);
   hostUrl.searchParams.set('fields', ['itemid']);
   hostUrl.pathname = '/items';
   request(hostUrl.toString(), function(err, res, body) {
@@ -108,9 +109,8 @@ function getTests(resume) {
       resume(new Error(`compile returned ${res.statusCode}`));
     }
     let data = [];
-    let smoke = process.argv.indexOf('--smoke') > 0;
     let tests = JSON.parse(body);
-    if (smoke) {
+    if (process.argv.indexOf('--smoke') > 0) {
       tests = shuffle(tests).slice(0, 100);
     } else {
       // Uncommment and use slice to narrow the test cases run with 'make test'.
