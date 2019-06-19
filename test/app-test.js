@@ -1,8 +1,7 @@
 const request = require('supertest');
-
-const app = require('./../index.js');
-
+const {createApp} = require('./../app.js');
 describe('app', () => {
+  let app;
   beforeEach('Create app', () => {
     const auth = (token, scope, resume) => resume(null, {access: scope});
     const compiler = {
@@ -10,6 +9,7 @@ describe('app', () => {
       version: 'v1.2.3',
       compile: (code, data, config, resume) => resume(null, 4),
     };
+    app = createApp(auth, compiler);
   });
 
   it('GET /', (done) => {

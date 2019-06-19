@@ -111,7 +111,7 @@ function getTests(resume) {
     let data = [];
     let tests = JSON.parse(body);
     if (process.argv.indexOf('--smoke') > 0) {
-      tests = shuffle(tests).slice(0, 100);
+      tests = shuffle(tests).slice(0, 10);
     } else {
       // Uncommment and use slice to narrow the test cases run with 'make test'.
       // tests = tests.slice(200, 250);
