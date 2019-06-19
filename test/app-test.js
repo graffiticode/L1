@@ -1,17 +1,15 @@
 const request = require('supertest');
 
-const {createApp} = require('./../src/app.js');
+const app = require('./../index.js');
 
 describe('app', () => {
-  let app;
   beforeEach('Create app', () => {
     const auth = (token, scope, resume) => resume(null, {access: scope});
     const compiler = {
       langID: '42',
       version: 'v1.2.3',
-      compile: (code, data, resume) => resume(null, 4),
+      compile: (code, data, config, resume) => resume(null, 4),
     };
-    app = createApp(auth, compiler);
   });
 
   it('GET /', (done) => {
