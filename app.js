@@ -14,7 +14,7 @@ exports.createApp = (auth, compiler) => {
     console.error(err.stack);
     res.sendStatus(500);
   });
-  app.use(express.static(path.resolve(__dirname, './../pub')));
+  app.use(express.static(path.resolve(__dirname, './pub')));
   app.get('/', routes.lang(compiler));
   app.get('/version', routes.version(compiler));
   app.get('/compile', routes.auth(auth, 'compile'), routes.compile(compiler));
