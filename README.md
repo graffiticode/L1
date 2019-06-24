@@ -30,3 +30,12 @@ This command will restart the dev server when changes to `src/`, `index.js`, or 
 ```bash
 $ npm run watch
 ```
+
+### Notes
+All language compilers run locally are expected to be at the port where `5` is subbed in for `L` in the language code.  `L0` becomes port `50` which can create issues if your machine only allows root access to ports less than 1000.  This bash code forwards traffic from port `50` to `5050` so that the compiler can be run on port `5050` instead.
+```bash
+$ echo "
+rdr pass inet proto tcp from any to any port 50 -> 127.0.0.1 port 5050
+" | sudo pfctl -ef -
+$ port=5050 make # run in compiler (L0 in this example) directory
+```
