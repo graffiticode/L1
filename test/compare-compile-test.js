@@ -1,4 +1,11 @@
-const {expect, assert} = require('chai');
+import React from "react";
+import renderer from "react-test-renderer";
+import './viewer-setup';
+import '../src/viewer';
+import snapshotDiff from 'snapshot-diff';
+import vm from 'vm';
+
+const {expect} = require('chai');
 const jsonDiff = require('json-diff');
 const path = require('path');
 const request = require('request');
@@ -7,6 +14,11 @@ const LOCAL_GATEWAY = 'http://localhost:3000/';
 const REMOTE_GATEWAY = 'https://www.graffiticode.com/';
 const LANG_ID = 0;
 const TIMEOUT_DURATION = 5000;
+
+const LocalViewer = window.gcexports.viewer.Viewer;
+window.gcexports.dispatcher = {register: () => {}};
+let RemoteViewer;
+
 getTests(function (err, testData) {
   describe('compiles', function() {
     this.timeout(TIMEOUT_DURATION);
@@ -29,6 +41,26 @@ getTests(function (err, testData) {
     });
     before('Check remote gateway', function (done) {
       checkGateway(REMOTE_GATEWAY, done);
+    });
+    before('Get remote viewer', function(done) {
+      const hostUrl = new url.URL(REMOTE_GATEWAY);
+      hostUrl.pathname = '/L0/viewer.js';
+
+       request(hostUrl.toString(), function(err, res, body) {
+        if (err) {
+          return done(err);
+        }
+        if (res.statusCode !== 200) {
+          done(new Error(`Remote viewer.js ${res.statusCode}`));
+        }
+        try {
+          vm.runInThisContext(body);
+          RemoteViewer = window.gcexports.viewer.Viewer;
+        } catch (e) {
+          console.log("ERROR with remote viewer code: " + body);
+        }
+        done();
+      });
     });
     function getCompile(host, id, resume) {
       const hostUrl = new url.URL(host);
@@ -71,14 +103,32 @@ getTests(function (err, testData) {
             if (err) {
               done(err);
             } else {
-              let expected, result;
               try {
-                if (jsonDiff.diffString(remote, local)) {
-                  console.log(jsonDiff.diffString(remote, local));
+                let compileDiff = jsonDiff.diffString(remote, local);
+                if (compileDiff) {
+                  console.log(compileDiff);
                 }
-                result = jsonDiff.diffString(remote, local);
-                expected = "";
-                expect(result).to.be.equal(expected);
+                expect(compileDiff).to.be.equal('');
+
+                const localTree = renderer.create(
+                  <LocalViewer id="graff-view" className="viewer" obj={remote} />
+                ).toJSON();
+
+                const remoteTree = renderer.create(
+                  <RemoteViewer id="graff-view" className="viewer" obj={remote} />
+                ).toJSON();
+
+                let viewerDiff = snapshotDiff(localTree, remoteTree, {
+                  colors: true,
+                  aAnnotation: 'remote',
+                  bAnnotation: 'local',
+                  contextLines: 1
+                });
+                if (viewerDiff.indexOf('Compared values have no visual difference') < 0  ) {
+                  console.log(viewerDiff);
+                }
+                expect(viewerDiff).to.be.equal('Snapshot Diff:\n\u001b[2mCompared values have no visual difference.\u001b[22m');
+
                 done();
               } catch (e) {
                 console.log("ERROR " + e);
