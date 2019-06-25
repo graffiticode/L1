@@ -127,7 +127,7 @@ getTests(function (err, testData) {
                 if (viewerDiff.indexOf('Compared values have no visual difference') < 0  ) {
                   console.log(viewerDiff);
                 }
-                expect(viewerDiff).to.be.equal('Snapshot Diff:\n\u001b[2mCompared values have no visual difference.\u001b[22m');
+                expect(viewerDiff).to.include('Compared values have no visual difference.');
 
                 done();
               } catch (e) {
