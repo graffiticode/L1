@@ -5,6 +5,7 @@ const request = require('request');
 const url = require('url');
 const LOCAL_GATEWAY = 'http://localhost:3000/';
 const REMOTE_GATEWAY = 'https://www.graffiticode.com/';
+const REMOTE_FE = 'https://www.graffiticode.com/';
 const LANG_ID = 0;
 const TIMEOUT_DURATION = 5000;
 getTests(function (err, testData) {
@@ -109,6 +110,7 @@ function getTests(resume) {
       resume(new Error(`compile returned ${res.statusCode}`));
     }
     let data = [];
+    console.log("getTests() body=" + JSON.stringify(body));
     let tests = JSON.parse(body);
     if (process.argv.indexOf('--smoke') > 0) {
       tests = shuffle(tests).slice(0, 10);

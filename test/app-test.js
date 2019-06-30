@@ -1,4 +1,5 @@
 const request = require('supertest');
+const {expect} = require('chai');
 const {createApp} = require('./../app.js');
 describe('app', () => {
   let app;
@@ -11,19 +12,19 @@ describe('app', () => {
     };
     app = createApp(auth, compiler);
   });
-
   it('GET /', (done) => {
     request(app)
       .get('/')
       .expect(200, 'Hello, L42!', done);
   });
-  
+  it('global.config.unused should be true', () => {
+    expect(global.config.unused).to.equal(true);
+  });
   it('GET /version', (done) => {
     request(app)
       .get('/version')
       .expect(200, 'v1.2.3', done);
   });
-
   it('GET /compile', (done) => {
     const body = {
       src: {},
@@ -36,7 +37,6 @@ describe('app', () => {
       .send(encodedBody)
       .expect(200, '4', done);
   });
-
   it('POST /compile', (done) => {
     const body = {
       src: {},

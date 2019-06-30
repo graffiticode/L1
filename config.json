@@ -1,0 +1,8 @@
+{
+  "test": {
+    "api-dev": "localhost:3000",
+    "api-prod": "api.artcompiler.com",
+    "app": "www.graffiticode.com"
+  },
+  "unused": true
+}
