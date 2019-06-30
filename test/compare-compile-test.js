@@ -3,11 +3,12 @@ const jsonDiff = require('json-diff');
 const path = require('path');
 const request = require('request');
 const url = require('url');
-const LOCAL_GATEWAY = 'http://localhost:3000/';
-const REMOTE_GATEWAY = 'https://www.graffiticode.com/';
-const REMOTE_FE = 'https://www.graffiticode.com/';
 const LANG_ID = 0;
 const TIMEOUT_DURATION = 5000;
+global.config = require("../config.json");
+console.log("config=" + JSON.stringify(global.config));
+const LOCAL_GATEWAY = global.config.test.app_dev;
+const REMOTE_GATEWAY = global.config.test.app_prod;
 getTests(function (err, testData) {
   describe('compiles', function() {
     this.timeout(TIMEOUT_DURATION);
