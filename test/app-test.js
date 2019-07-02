@@ -25,18 +25,6 @@ describe('app', () => {
       .get('/version')
       .expect(200, 'v1.2.3', done);
   });
-  it('GET /compile', (done) => {
-    const body = {
-      src: {},
-      data: {},
-    };
-    const encodedBody = JSON.stringify(body);
-    request(app)
-      .get('/compile')
-      .set('Content-type', 'text/plain')
-      .send(encodedBody)
-      .expect(200, '4', done);
-  });
   it('POST /compile', (done) => {
     const body = {
       src: {},
@@ -45,7 +33,7 @@ describe('app', () => {
     const encodedBody = JSON.stringify(body);
     request(app)
       .post('/compile')
-      .set('Content-type', 'text/plain')
+      .set('Content-type', 'application/json')
       .send(encodedBody)
       .expect(200, '4', done);
   });

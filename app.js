@@ -14,7 +14,7 @@ exports.createApp = (auth, compiler) => {
   app.use(express.static(path.resolve(__dirname, './pub')));
   app.get('/', routes.root(compiler));
   app.get('/version', routes.version(compiler));
-  app.post('/compile', routes.compile(compiler));
   app.get('/:path', routes.lang(compiler));
+  app.post('/compile', routes.compile(compiler));
   return app;
 };

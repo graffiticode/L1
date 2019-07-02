@@ -6,7 +6,6 @@ const url = require('url');
 const LANG_ID = 0;
 const TIMEOUT_DURATION = 5000;
 global.config = require("../config.json");
-console.log("config=" + JSON.stringify(global.config));
 const LOCAL_GATEWAY = global.config.test.app_dev;
 const REMOTE_GATEWAY = global.config.test.app_prod;
 getTests(function (err, testData) {
@@ -111,7 +110,6 @@ function getTests(resume) {
       resume(new Error(`compile returned ${res.statusCode}`));
     }
     let data = [];
-    console.log("getTests() body=" + JSON.stringify(body));
     let tests = JSON.parse(body);
     if (process.argv.indexOf('--smoke') > 0) {
       tests = shuffle(tests).slice(0, 10);
