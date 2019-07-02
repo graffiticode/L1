@@ -2,8 +2,9 @@ module.exports = (compiler) => {
   return (req, res) => {
     let body = null;
     try {
-      body = JSON.parse(req.body);
+      body = req.body;
     } catch(err) {
+      console.log(err.stack);
       return res.sendStatus(400);
     }
     let code = body.src;
