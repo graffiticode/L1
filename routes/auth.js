@@ -1,11 +1,7 @@
 module.exports = (auth, scope) => {
   return (req, res, next) => {
-    let body = null;
-    try {
-      body = JSON.parse(req.body);
-    } catch(err) {
-      return res.sendStatus(400);
-    }
+    let body = req.body;
+
     const token = body.auth;
     auth(token, scope, (err, data) => {
       if (err) {
