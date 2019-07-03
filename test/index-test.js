@@ -1,6 +1,6 @@
 const request = require('supertest');
-
-const app = require('./../index.js');
+const express = require('express');
+const app = express();
 
 describe('index', () => {
   it('GET /', (done) => {

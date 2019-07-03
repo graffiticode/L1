@@ -14,3 +14,6 @@ smoke: build
 
 test: build
 	npm run test
+
+clean:
+	rm -rf lib pub node_modules
