@@ -1,7 +1,5 @@
 const request = require('supertest');
-
-const app = require('./../index.js');
-
+const {app} = require('./../app');
 describe('index', () => {
   it('GET /', (done) => {
     request(app)

@@ -9,9 +9,7 @@ describe('routes', () => {
   describe('auth', () => {
     let called;
     let app;
-
     let auth;
-
     beforeEach('Setup app', () => {
       called = 0;
       auth = null;
@@ -24,10 +22,7 @@ describe('routes', () => {
       }
 
       app = express();
-      app.use(bodyParser.urlencoded({ extended: false, limit: 100000000 }));
-      app.use(bodyParser.text({limit: '50mb'}));
-      app.use(bodyParser.raw({limit: '50mb'}));
-      app.use(bodyParser.json({limit: '50mb' }));
+      app.use(bodyParser.json({type: "application/json", limit: '50mb' }));
       app.get('/auth', routes.auth(authProxy, 'foo'), (_, res) => res.sendStatus(200));
     });
 
@@ -38,24 +33,17 @@ describe('routes', () => {
       };
       request(app)
         .get('/auth')
-        .set('Content-type', 'text/plain')
-        .send(JSON.stringify({auth: 'fake-token'}))
+        .set('Content-type', 'application/json')
+        .send({auth: 'fake-token'})
         .expect(200, 'OK', done);
     });
 
-    it('should return 400 for bad body', (done) => {
+    it('should return 401 for bad body', (done) => {
       request(app)
         .get('/auth')
         .set('Content-type', 'text/plain')
-        .send('bad body')
-        .expect(400, 'Bad Request', done);
-    });
-
-    it('should return 400 for json body', (done) => {
-      request(app)
-        .get('/auth')
-        .send({src: {}, data: {}})
-        .expect(400, 'Bad Request', done);
+        .send("bad body")
+        .expect(401, 'Unauthorized', done);
     });
 
     it('should return 200 if auth does contain scope', (done) => {
@@ -64,8 +52,8 @@ describe('routes', () => {
       };
       request(app)
         .get('/auth')
-        .set('Content-type', 'text/plain')
-        .send(JSON.stringify({}))
+        .set('Content-type', 'application/json')
+        .send({})
         .expect(200, 'OK', done);
     });
 
@@ -75,8 +63,8 @@ describe('routes', () => {
       };
       request(app)
         .get('/auth')
-        .set('Content-type', 'text/plain')
-        .send(JSON.stringify({}))
+        .set('Content-type', 'application/json')
+        .send({})
         .expect(401, 'not authorized for foo', done);
     });
 
