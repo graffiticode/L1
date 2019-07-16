@@ -17,9 +17,13 @@
     "test": "mocha -r babel-register --reporter spec --recursive --delay",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "watch": "npx nodemon -w src -w index.js -w package.json --exec make",
+    "lambda:zip": "zip -r function.zip . -x=.git/*",
+    "lambda:update": "aws lambda update-function-code --function-name L0 --zip-file fileb://function.zip",
+    "deploy:lambda": "npm run build && npm run lambda:zip && npm run lambda:update",
     "deploy:gcloud": "gcloud functions deploy L0 --trigger-http --runtime=nodejs10 --entry-point=compiler"
   },
   "dependencies": {
+    "aws-serverless-express": "^3.3.6",
     "body-parser": "^1.18.3",
     "domready": "^1.0.8",
     "express": "^4.0.x",

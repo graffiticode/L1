@@ -12,6 +12,7 @@
   * `$ make`
 * Make sure everything is good.
   * Visit your local GC server (e.g. http://localhost:3000/lang?id=0) to test.
+  * Make sure the terminal window that GC is running in has the environment variable LOCAL_COMPILER=true.
   * Paste into the code view: `"hello, world!"..`.
   * See "hello, world!" in the form view.
 * Design a language that allows you to say things that are interesting and beautiful.

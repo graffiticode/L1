@@ -34,4 +34,8 @@ app.get('/:path', routes.lang(compiler));
 app.post('/compile', routes.auth(auth, 'compile'), routes.compile(compiler));
 
 // start the dance...
-app.listen(PORT, () => console.log(`Node app is running at localhost: ${PORT}`));
+if (!module.parent) {
+  app.listen(PORT, () => {
+    console.log(`Node app is running at :${PORT}`);
+  });
+}

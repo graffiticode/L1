@@ -1,6 +1,9 @@
 # Node.js
 node_modules/
 
+# Lambda
+function.zip
+
 # Build
 lib/
 pub/
