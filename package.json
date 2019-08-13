@@ -1,5 +1,5 @@
 {
-  "name": "L0",
+  "name": "L1",
   "version": "0.0.1",
   "description": "Compiler as a service.",
   "author": "Art Compiler LLC",
@@ -7,7 +7,7 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/graffiticode/L0"
+    "url": "https://github.com/graffiticode/L1"
   },
   "scripts": {
     "start": "node app.js",
@@ -18,9 +18,9 @@
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "watch": "npx nodemon -w src -w index.js -w package.json --exec make",
     "lambda:zip": "zip -r function.zip . -x=.git/*",
-    "lambda:update": "aws lambda update-function-code --function-name L0 --zip-file fileb://function.zip",
+    "lambda:update": "aws lambda update-function-code --function-name L1 --zip-file fileb://function.zip",
     "deploy:lambda": "npm run build && npm run lambda:zip && npm run lambda:update",
-    "deploy:gcloud": "gcloud functions deploy L0 --trigger-http --runtime=nodejs10 --entry-point=compiler"
+    "deploy:gcloud": "gcloud functions deploy L1 --trigger-http --runtime=nodejs10 --entry-point=compiler"
   },
   "dependencies": {
     "aws-serverless-express": "^3.3.6",
