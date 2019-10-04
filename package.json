@@ -23,6 +23,7 @@
     "deploy:gcloud": "gcloud functions deploy L1 --trigger-http --runtime=nodejs10 --entry-point=compiler"
   },
   "dependencies": {
+    "@graffiticode/graffiticode-compiler-framework": "0.0.2",
     "aws-serverless-express": "^3.3.6",
     "body-parser": "^1.18.3",
     "domready": "^1.0.8",
