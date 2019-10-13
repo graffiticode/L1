@@ -20,7 +20,7 @@
     "watch": "npx nodemon -w src -w index.js -w package.json --exec make",
     "lambda:zip": "zip -r function.zip . -x=.git/*",
     "lambda:update": "aws lambda update-function-code --function-name L1 --zip-file fileb://function.zip",
-    "deploy:lambda": "npm run build && npm run lambda:zip && npm run lambda:update",
+    "deploy:lambda": "npm run compile && npm run lambda:zip && npm run lambda:update",
     "deploy:gcloud": "gcloud functions deploy L1 --trigger-http --runtime=nodejs10 --entry-point=compiler",
     "check": "gts check",
     "clean": "gts clean",
@@ -30,7 +30,7 @@
     "posttest": "npm run check"
   },
   "dependencies": {
-    "@graffiticode/graffiticode-compiler-framework": "0.0.2",
+    "@graffiticode/graffiticode-compiler-framework": "^0.0.5",
     "aws-serverless-express": "^3.3.6",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
@@ -66,7 +66,7 @@
     "chai": "^4.2.0",
     "d3": "4.7.1",
     "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "flow-bin": "^0.32.0",
     "gts": "^1.1.0",
     "jsdom": "^15.1.1",
