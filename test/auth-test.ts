@@ -1,24 +1,25 @@
-const { expect } = require('chai');
-const NodeHttpAdapter = require('@pollyjs/adapter-node-http');
-const { Polly, setupMocha } = require('@pollyjs/core');
-const FSPersister = require('@pollyjs/persister-fs');
+import { expect } from 'chai';
+import * as NodeHttpAdapter from '@pollyjs/adapter-node-http';
+import { Polly, setupMocha } from '@pollyjs/core';
+import * as FSPersister from '@pollyjs/persister-fs';
 
-const { createAuth } = require('./../src/auth.js');
+import { createAuth } from './../src/auth';
 
 Polly.register(FSPersister);
 Polly.register(NodeHttpAdapter);
 
 describe('auth', () => {
-  const compiler = { langID: '0' };
+  const language = 'LTest';
 
   setupMocha({
     adapters: ['node-http'],
     persister: 'fs',
   });
 
+  // tslint:disable-next-line:only-arrow-functions
   it('should validate with no token', function(done) {
     // Arrange
-    const auth = createAuth(compiler);
+    const auth = createAuth(language);
 
     // Act
     auth(null, 'foo', (err, data) => {
@@ -35,7 +36,7 @@ describe('auth', () => {
 
   it('should return err for invalid token', function(done) {
     // Arrange
-    const auth = createAuth(compiler);
+    const auth = createAuth(language);
     const { server } = this.polly;
     server
       .post('https://auth.artcompiler.com/validate')
@@ -55,11 +56,13 @@ describe('auth', () => {
 
   it('should data for valid token', function(done) {
     // Arrange
-    const auth = createAuth(compiler);
+    const auth = createAuth(language);
     const { server } = this.polly;
     server
       .post('https://auth.artcompiler.com/validate')
-      .intercept((_, res) => res.status(200).json({ address: '1.2.3.4', access: 'foo' }));
+      .intercept((_, res) =>
+        res.status(200).json({ address: '1.2.3.4', access: 'foo' })
+      );
     server
       .post('https://auth.artcompiler.com/count')
       .intercept((_, res) => res.sendStatus(200));
@@ -79,11 +82,14 @@ describe('auth', () => {
 
   it('should cache data', function(done) {
     // Arrange
-    const auth = createAuth(compiler);
+    const auth = createAuth(language);
     const { server } = this.polly;
     server
       .post('https://auth.artcompiler.com/validate')
-      .intercept((_, res) => res.status(200).json({ address: '1.2.3.4', access: 'foo' }), {times: 1});
+      .intercept(
+        (_, res) => res.status(200).json({ address: '1.2.3.4', access: 'foo' }),
+        { times: 1 }
+      );
     server
       .post('https://auth.artcompiler.com/count')
       .intercept((_, res) => res.sendStatus(200))
