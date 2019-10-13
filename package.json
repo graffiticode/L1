@@ -4,7 +4,7 @@
   "description": "Compiler as a service.",
   "author": "Art Compiler LLC",
   "license": "MIT",
-  "main": "app.js",
+  "main": "build/src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/graffiticode/L1"
@@ -14,7 +14,8 @@
     "build": "babel-node tools/build",
     "smoke": "mocha --reporter spec --recursive --delay --smoke",
     "pretest": "npm run compile",
-    "test": "mocha -r babel-register --reporter spec --recursive --delay",
+    "test-old": "mocha -r babel-register --reporter spec --recursive --delay",
+    "test": "mocha build/test",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "watch": "npx nodemon -w src -w index.js -w package.json --exec make",
     "lambda:zip": "zip -r function.zip . -x=.git/*",
@@ -51,6 +52,9 @@
     "@pollyjs/adapter-node-http": "^2.6.3",
     "@pollyjs/core": "^2.6.3",
     "@pollyjs/persister-fs": "^2.6.3",
+    "@types/chai": "^4.2.3",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.0.3",
     "babel": "^6.0.x",
     "babel-cli": "^6.4.5",
     "babel-plugin-transform-es2015-modules-amd": "^6.8.0",
@@ -64,6 +68,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "flow-bin": "^0.32.0",
+    "gts": "^1.1.0",
     "jsdom": "^15.1.1",
     "json-diff": "^0.5.4",
     "mocha": "^6.2.1",
@@ -73,9 +78,7 @@
     "react-test-renderer": "^16.10.2",
     "sinon": "^7.5.0",
     "snapshot-diff": "^0.5.2",
-    "uglify-js": "^2.7.3",
-    "gts": "^1.1.0",
     "typescript": "~3.5.0",
-    "@types/node": "^10.0.3"
+    "uglify-js": "^2.7.3"
   }
 }
