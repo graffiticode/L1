@@ -1,13 +1,5 @@
 /* Copyright (c) 2016, Art Compiler LLC */
-import {
-  assert,
-  message,
-  messages,
-  reserveCodeRange,
-  decodeID,
-  encodeID,
-  validate,
-} from './share.js';
+import { assert, message, messages, reserveCodeRange } from './share.js';
 reserveCodeRange(1000, 1999, 'compile');
 messages[1001] = 'Node ID %1 not found in pool.';
 messages[1002] = 'Invalid tag in node with Node ID %1.';
