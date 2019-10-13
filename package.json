@@ -13,14 +13,20 @@
     "start": "graffiticode-compiler-framework --target=compiler",
     "build": "babel-node tools/build",
     "smoke": "mocha --reporter spec --recursive --delay --smoke",
-    "pretest": "npm run build",
+    "pretest": "npm run compile",
     "test": "mocha -r babel-register --reporter spec --recursive --delay",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "watch": "npx nodemon -w src -w index.js -w package.json --exec make",
     "lambda:zip": "zip -r function.zip . -x=.git/*",
     "lambda:update": "aws lambda update-function-code --function-name L1 --zip-file fileb://function.zip",
     "deploy:lambda": "npm run build && npm run lambda:zip && npm run lambda:update",
-    "deploy:gcloud": "gcloud functions deploy L1 --trigger-http --runtime=nodejs10 --entry-point=compiler"
+    "deploy:gcloud": "gcloud functions deploy L1 --trigger-http --runtime=nodejs10 --entry-point=compiler",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "posttest": "npm run check"
   },
   "dependencies": {
     "@graffiticode/graffiticode-compiler-framework": "0.0.2",
@@ -67,6 +73,9 @@
     "react-test-renderer": "^16.10.2",
     "sinon": "^7.5.0",
     "snapshot-diff": "^0.5.2",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.3",
+    "gts": "^1.1.0",
+    "typescript": "~3.5.0",
+    "@types/node": "^10.0.3"
   }
 }
