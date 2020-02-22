@@ -1,32 +1,26 @@
-name: Test Run
-on:
-  push
+name: Node CI
+
+on: [push]
+
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm ci
-      - run: npm test
 
-  lambda:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm ci
-      # - run: npm run compile
-      - run: npm ci --ignore-scripts --production
-      - run: zip -r function.zip . -i package\*.json -i config.json -i build/src/\*.js -i node_modules/\*
-      - uses: stcalica/update-lambda
-        with:
-          package: function.zip
-          function-name: L1
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
+      run: |
+        npm ci
+        npm run compile --if-present
+        npm test
+      env:
+        CI: true
