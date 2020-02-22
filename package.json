@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "graffiticode-compiler-framework --target=compiler",
-    "build": "babel-node tools/build",
+    "build": "npm run compile",
     "smoke": "mocha --reporter spec --recursive --delay --smoke",
     "pretest": "npm run compile",
     "test-old": "mocha -r babel-register --reporter spec --recursive --delay",
@@ -30,7 +30,7 @@
     "posttest": "npm run check"
   },
   "dependencies": {
-    "@graffiticode/graffiticode-compiler-framework": "^0.0.5",
+    "@graffiticode/graffiticode-compiler-framework": "^0.0.11",
     "aws-serverless-express": "^3.3.6",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",

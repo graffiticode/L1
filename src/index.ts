@@ -1,4 +1,7 @@
-import { AuthError } from '@graffiticode/graffiticode-compiler-framework';
+import {
+  AuthError,
+  createLambda,
+} from '@graffiticode/graffiticode-compiler-framework';
 import { createAuth } from './auth';
 import { compile, langID } from './compile';
 
@@ -31,3 +34,5 @@ export const compiler = {
     });
   },
 };
+
+export const lambdaHandler = createLambda(compiler);
