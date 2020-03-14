@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "graffiticode-compiler-framework --target=compiler",
-    "build": "babel-node tools/build",
+    "build": "npm run compile",
     "smoke": "mocha --reporter spec --recursive --delay --smoke",
     "pretest": "npm run compile",
     "test-old": "mocha -r babel-register --reporter spec --recursive --delay",
@@ -30,13 +30,13 @@
     "posttest": "npm run check"
   },
   "dependencies": {
-    "@graffiticode/graffiticode-compiler-framework": "^0.0.5",
+    "@graffiticode/graffiticode-compiler-framework": "^0.0.11",
     "aws-serverless-express": "^3.3.6",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "hashids": "1.1.1",
     "morgan": "^1.9.1",
-    "request": "^2.88.0"
+    "request": "^2.88.2"
   },
   "engines": {
     "node": "latest"
@@ -49,12 +49,12 @@
     ]
   },
   "devDependencies": {
-    "@pollyjs/adapter-node-http": "^2.6.3",
+    "@pollyjs/adapter-node-http": "^2.7.0",
     "@pollyjs/core": "^2.6.3",
     "@pollyjs/persister-fs": "^2.6.3",
-    "@types/chai": "^4.2.3",
+    "@types/chai": "^4.2.10",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^10.0.3",
+    "@types/node": "^10.17.17",
     "babel": "^6.0.x",
     "babel-cli": "^6.4.5",
     "babel-plugin-transform-es2015-modules-amd": "^6.8.0",
@@ -65,17 +65,17 @@
     "browserify": "^12.0.1",
     "chai": "^4.2.0",
     "d3": "4.7.1",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "flow-bin": "^0.32.0",
-    "gts": "^1.1.0",
-    "jsdom": "^15.1.1",
+    "gts": "^1.1.2",
+    "jsdom": "^15.2.1",
     "json-diff": "^0.5.4",
-    "mocha": "^6.2.1",
-    "nodemon": "^1.19.3",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-test-renderer": "^16.10.2",
+    "mocha": "^6.2.2",
+    "nodemon": "^1.19.4",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-test-renderer": "^16.13.0",
     "sinon": "^7.5.0",
     "snapshot-diff": "^0.5.2",
     "typescript": "~3.5.0",

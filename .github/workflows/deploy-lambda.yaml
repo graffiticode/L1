@@ -1,0 +1,37 @@
+name: Deploy to AWS Lambda Staging
+
+on:
+  push:
+    branches:    
+      - master 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm test
+
+  lambda:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      # - run: npm run compile
+      - run: npm ci --ignore-scripts --production
+      - run: zip -r function.zip . -i package\*.json -i config.json -i build/src/\*.js -i node_modules/\*
+      - uses: stcalica/update-lambda@master
+        with:
+          package: function.zip
+          function-name: graffiticode-l1-staging
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
