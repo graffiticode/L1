@@ -24,7 +24,7 @@
     "deploy:gcloud": "gcloud functions deploy L1 --trigger-http --runtime=nodejs10 --entry-point=compiler",
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "tsc -p .",
+    "compile": "tsc -p . && copyfiles -u 1 src/assets/* build/src/",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "posttest": "npm run check"
@@ -64,6 +64,7 @@
     "babelify": "^7.0.2",
     "browserify": "^12.0.1",
     "chai": "^4.2.0",
+    "copyfiles": "^2.2.0",
     "d3": "4.7.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
