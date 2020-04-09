@@ -10,6 +10,7 @@ const auth = createAuth(language);
 
 export const compiler = {
   language,
+  assetPath: __dirname + '/assets',
   auth(token: string) {
     return new Promise((resolve, reject) => {
       auth(token, 'compile', (err, authInfo) => {
